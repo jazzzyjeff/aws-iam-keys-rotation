@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Ado Iam Keys Rotation
+Parameters:
+  Environment:
+    Description: Environment name
+    Type: String
+
+  BuildDefinitionName:
+    Description: Build befinition name
+    Type: String
+
+  BuildNumber:
+    Description: The build Id used for Lambda code
+    Type: String
+
+  StorageBucket:
+    Description: Storage bucket of the Lambda code
+    Type: AWS::SSM::Parameter::Value<String>
+
+  AdoOrg:
+    Description: Ado org
+    Type: String
+
+  AdoProject:
+    Description: Ado project
+    Type: String
+
+  AdoServiceEndpointName:
+    Description: Ado service endpoint name
+    Type: String
+
+  AdoUserSsm:
+    Description: Ado user ssm
+    Type: String
+
+  AdoTokenSsm:
+    Description: Ado token ssm
+    Type: String
+
+  IamUserName:
+    Description: Iam user name
+    Type: String
+
+  DiscordWebhookUrlSsm:
+    Description: Discord webhook url ssm
+    Type: String
+
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: go1.x
+      Handler: main
+      Role: !GetAtt LambdaRole.Arn
+      Code:
+        S3Bucket: !Ref StorageBucket
+        S3Key: !Sub ${BuildDefinitionName}/${BuildNumber}/${BuildDefinitionName}-${BuildNumber}.zip
+      Description: Ado Iam Keys Rotation
+      FunctionName: !Ref BuildDefinitionName
+      Environment:
+        Variables:
+          GO_ENVIRONMENT: !Ref Environment
+          ADO_ORG: !Ref AdoOrg
+          ADO_PROJECT: !Ref AdoProject
+          ADO_SERVICE_ENDPOINT_NAME: !Ref AdoServiceEndpointName
+          ADO_USER_SSM: !Ref AdoUserSsm
+          ADO_TOKEN_SSM: !Ref AdoTokenSsm
+          IAM_USER_NAME: !Ref IamUserName
+          DISCORD_WEBHOOK_URL_SSM: !Ref DiscordWebhookUrlSsm
+      MemorySize: 128
+      Timeout: 300
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: !Ref AWS::StackName
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: 
+                  - ssm:GetParameter
+                  - iam:ListAccessKeys
+                  - iam:CreateAccessKey
+                  - iam:DeleteAccessKey
+                Resource: 
+                  - !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${AdoUserSsm}
+                  - !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${AdoTokenSsm}
+                  - !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${DiscordWebhookUrlSsm}
+                  - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:user/${IamUserName}
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  AdoIamKeysRotationEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Event To Trigger Lambda Function
+      ScheduleExpression: cron(0 0 ? * * *)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt LambdaFunction.Arn
+          Id: !Ref BuildDefinitionName
+          Input: '{"eventName": "rotate"}'
+
+  AdoIamKeysRotationLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Principal: events.amazonaws.com
+      Action: lambda:InvokeFunction
+      SourceArn: !GetAtt AdoIamKeysRotationEventRule.Arn
