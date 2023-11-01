@@ -1,6 +1,3 @@
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -19,3 +16,51 @@
 
 # Go workspace file
 go.work
+
+# Ignore .terraform directories
+**/.terraform/
+
+# Ignore .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Ignore .tfplan files
+*.tfplan
+
+# Ignore override files as they are usually used to override variables and not committed
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore crash log files
+crash.log
+
+# Ignore .terraformrc and terraform.rc files
+.terraformrc
+terraform.rc
+
+# Ignore .terraform.lock.hcl file
+.terraform.lock.hcl
+
+# Ignore CLI configuration files
+cli.tfvars
+cli.auto.tfvars
+
+# Ignore the .git directory, it's meta information
+.git/
+
+# Ignore .vscode directory
+.vscode/
+
+# Ignore .idea directory (for JetBrains IDEs)
+.idea/
+
+# Ignore the .plan directory, a potential workspace directory
+.plan/
+
+# Ignore the .terraformignore file, used to specify patterns to exclude
+.terraformignore
+
+# Ignore .tf folder, which may contain provider binary plugins
+.tf/
