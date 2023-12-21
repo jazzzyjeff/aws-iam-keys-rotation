@@ -64,3 +64,6 @@ cli.auto.tfvars
 
 # Ignore .tf folder, which may contain provider binary plugins
 .tf/
+
+.env
+__pycache__

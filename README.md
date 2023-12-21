@@ -13,13 +13,11 @@ This repository demostrates how to perform AWS Iam User keys rotation
 ## Usage
 
 - 🚀 Only supported for Azure DevOps
-- 🚀 Infrastructure provided in CloudFormation
-- 🚀 Language written in GoLang
+- 🚀 Infrastructure provided in CloudFormation & Terraform
+- 🚀 Language written in GoLang & Python
 
 ## Coming Soon
-- ❗️ Support for GitHub Actions
-- ❗️ Write language in Python
-- ❗️ Infrastructure created via Terraform
+- ❗️ 
 
 ## Author
 
