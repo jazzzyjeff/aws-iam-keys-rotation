@@ -1,24 +1,17 @@
-<h1 align="center">Welcome to AWS Iam Keys Rotation 👋</h1>
+# AWS Iam User Keys Rotation
 
-## ✨ Overview
+## 🚀 Overview
 
 This repository demostrates how to perform AWS Iam User keys rotation
 
-## Features
+## ✨ Features
 
-- ✨ Rotate keys on given Iam user
-- ✨ Update given service connection within Azure DevOps
-- ✨ Discord Notifications
+- 🔹 Rotate keys on given Iam user
+- 🔹 Update given service connection within Azure DevOps
+- 🔹 Discord Notifications
 
-## Usage
+## 🛠 Usage
 
-- 🚀 Only supported for Azure DevOps
-- 🚀 Infrastructure provided in CloudFormation & Terraform
-- 🚀 Language written in GoLang & Python
-
-## Coming Soon
-- ❗️ 
-
-## Author
-
-👤 **JazzyJeff**
+- Only supported for Azure DevOps
+- Infrastructure provided in CloudFormation & Terraform
+- Language written in GoLang & Python
